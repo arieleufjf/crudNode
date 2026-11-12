@@ -4,42 +4,10 @@ const db = require('./database'); // Importa a conexão com o banco Turso
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração de middlewares para processar dados de formulários
+// Configuração de middlewares para processar dados de formulários e arquivos estáticos
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// -----------------------------------------------------------------------------
-// HELPER: Estilos CSS unificados para todas as telas
-// -----------------------------------------------------------------------------
-const cssEstilos = `
-  <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; margin: 0; padding: 30px 15px; color: #333; }
-    .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    h2, h3 { color: #1e293b; margin-top: 0; text-align: center; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .campo { margin-bottom: 12px; }
-    .campo-full { grid-column: span 2; }
-    label { font-weight: 600; display: block; margin-bottom: 6px; font-size: 14px; color: #475569; }
-    input[type="text"], input[type="tel"], select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
-    input:focus, select:focus { border-color: #3b82f6; outline: none; }
-    .radio-group { display: flex; gap: 15px; margin-top: 6px; }
-    .radio-group label { font-weight: normal; cursor: pointer; }
-    .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
-    .btn-primary { background-color: #2563eb; color: white; width: 100%; }
-    .btn-primary:hover { background-color: #1d4ed8; }
-    .btn-warning { background-color: #f59e0b; color: white; padding: 6px 12px; font-size: 13px; }
-    .btn-danger { background-color: #ef4444; color: white; padding: 6px 12px; font-size: 13px; }
-    .btn-secondary { background-color: #64748b; color: white; margin-top: 10px; }
-    
-    /* Tabela de Alunos */
-    table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
-    th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
-    th { background-color: #0f172a; color: white; }
-    tr:nth-child(even) { background-color: #f8fafc; }
-    .acoes { display: flex; gap: 6px; justify-content: center; }
-  </style>
-`;
+app.use(express.static('public')); // <-- LIBERA A PASTA PUBLIC PARA O CSS
 
 // -----------------------------------------------------------------------------
 // 1. ROTA GET '/': Lista os alunos e exibe o formulário de cadastro
@@ -76,7 +44,7 @@ app.get('/', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <title>CRUD de Alunos - UFJF</title>
-        ${cssEstilos}
+       <link rel="stylesheet" href="/css/style.css">
       </head>
       <body>
         <div class="container">
@@ -198,7 +166,7 @@ app.get('/editar/:id', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <title>Editar Aluno</title>
-        ${cssEstilos}
+        <link rel="stylesheet" href="/css/style.css">
       </head>
       <body>
         <div class="container" style="max-width: 600px;">
@@ -244,5 +212,14 @@ app.get('/editar/:id', async (req, res) => {
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Salvar Alterações</button>
-            <a href="/" class="btn btn-secondary" style="display
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <a href="/" class="btn btn-secondary" style="width: 100%;">Cancelar</a>
+          </form>
+        </div>
+      </body>
+      </html>
+    `);
+  } catch (err) {
+    res.status(500).send('Erro ao buscar aluno: ' + err.message);
+  }
+});
