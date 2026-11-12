@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { createClient } = require('@libsql/client');
 
 // Lê as chaves das variáveis de ambiente
